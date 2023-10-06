@@ -42,7 +42,7 @@ def predict(x):
 app = Flask(__name__)
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/cek', methods=['POST'])
 def index():
     if request.method == "POST":
         file = request.files.get('file')
@@ -91,7 +91,8 @@ def index():
                                   "specific_recomendation": specific_recomendation
                                   }
 
-            data = {"prediction": prediction, "label": label_name, "kumilcintabh": recommendation}
+            data = {"prediction": prediction, "label": label_name,
+                    "kumilcintabh": recommendation}
             return jsonify(data)
         except Exception as e:
             return jsonify({"error": str(e)})

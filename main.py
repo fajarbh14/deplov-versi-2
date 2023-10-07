@@ -44,7 +44,7 @@ def predict(x):
 app = Flask(__name__)
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['POST'])
 def index():
     if request.method == "POST":
         file = request.files.get('file')
@@ -69,19 +69,54 @@ def index():
             # Konversi nilai 'prediction' menjadi int
             prediction = int(prediction)
 
-            recommendation = ''
+            recommendation = {}
 
             if label_name == 'Tidak ada DR (Tidak ada Retinopati Diabetes)':
-                recommendation = "Lakukan Kontrol gula darah secara berkala"
+                message = ["Lakukan Kontrol Gula Darah Secara Berkala"]
+                general_recommendation = ["Cara Menurunkan Gula Darah dengan Alam", 
+                                          "1 Berolahraga secara teratur.",
+                                          "2 Minum banyak air putih.",
+                                          "3 Konsumsi makanan berserat.",
+                                          "4 Konsumsi makanan kaya protein.",
+                                          "5 Konsumsi makanan kaya kromium"]
+                recommendation = {
+                    "message": message,
+                    "general_recommendation": general_recommendation
+                }
             elif label_name == 'DR Ringan (Mild)':
-                recommendation = "Lakukan kontrol gula darah secara berkala"
+                message = ["Lakukan Kontrol Gula Darah Secara Berkala"]
+                general_recommendation = ["Cara Menurunkan Gula Darah dengan Alam", 
+                                          "1 Berolahraga secara teratur.",
+                                          "2 Minum banyak air putih.",
+                                          "3 Konsumsi makanan berserat.",
+                                          "4 Konsumsi makanan kaya protein.",
+                                          "5 Konsumsi makanan kaya kromium"]
+                recommendation = {
+                    "message": message,
+                    "general_recommendation": general_recommendation
+                }
             elif label_name == 'DR Sedang (Moderate)':
-                recommendation = "Lakukan Konsultasi ke dokter mata"
+                message = ["Lakukan konsultasi ke Dokter"]
+                general_recommendation = ["Hal-hal yang mungkin dilakukan setelah melakukan konsultasi bersama Dokter:",
+                                          "1 Injeksi mata: Dokter akan menyuntikan steroid pada mata untuk menghentikan peradangan dan mencegah pembentukan pembuluh darah baru. Suntikan anti-VEGF juga mungkin disarankan, yang dapat mengurangi pembengkakan di makula dan meningkatkan penglihatan.",
+                                          "2 Operasi Leser: Operasi laser yang disebut fotokoagulasi mengurangi pembengkakan di retina dan menghilangkan pembuluh darah abnormal.",
+                                          "3 Vitrektomi: Jika Anda menderita retinopati diabetik stadium lanjut, Anda mungkin memerlukan vitrektomi. Operasi mata ini mengatasi masalah pada retina dan vitreous, zat seperti jeli di tengah mata. Operasi tersebut dapat menghilangkan darah atau cairan, jaringan parut, dan sebagian gel vitreous sehingga sinar cahaya dapat terfokus dengan baik pada retina."]
+                recommendation = {"message": message, "general_recommendation": general_recommendation}
             elif label_name == 'DR Parah (Severe)':
-                recommendation = "Lakukan konsultasi ke dokter mata"
+                message = ["Lakukan konsultasi ke Dokter"]
+                general_recommendation = ["Hal-hal yang mungkin dilakukan setelah melakukan konsultasi bersama Dokter:",
+                                          "1 Injeksi mata: Dokter akan menyuntikan steroid pada mata untuk menghentikan peradangan dan mencegah pembentukan pembuluh darah baru. Suntikan anti-VEGF juga mungkin disarankan, yang dapat mengurangi pembengkakan di makula dan meningkatkan penglihatan.",
+                                          "2 Operasi Leser: Operasi laser yang disebut fotokoagulasi mengurangi pembengkakan di retina dan menghilangkan pembuluh darah abnormal.",
+                                          "3 Vitrektomi: Jika Anda menderita retinopati diabetik stadium lanjut, Anda mungkin memerlukan vitrektomi. Operasi mata ini mengatasi masalah pada retina dan vitreous, zat seperti jeli di tengah mata. Operasi tersebut dapat menghilangkan darah atau cairan, jaringan parut, dan sebagian gel vitreous sehingga sinar cahaya dapat terfokus dengan baik pada retina."]
+                recommendation = {"message": message, "general_recommendation": general_recommendation}
             elif label_name == 'DR Proliferatif (Proliferative)':
-                recommendation = "Lakukan konsultasi ke dokter mata"
-            
+                message = ["Lakukan konsultasi ke Dokter"]
+                general_recommendation = ["Hal-hal yang mungkin dilakukan setelah melakukan konsultasi bersama Dokter:",
+                                          "1 Injeksi mata: Dokter akan menyuntikan steroid pada mata untuk menghentikan peradangan dan mencegah pembentukan pembuluh darah baru. Suntikan anti-VEGF juga mungkin disarankan, yang dapat mengurangi pembengkakan di makula dan meningkatkan penglihatan.",
+                                          "2 Operasi Leser: Operasi laser yang disebut fotokoagulasi mengurangi pembengkakan di retina dan menghilangkan pembuluh darah abnormal.",
+                                          "3 Vitrektomi: Jika Anda menderita retinopati diabetik stadium lanjut, Anda mungkin memerlukan vitrektomi. Operasi mata ini mengatasi masalah pada retina dan vitreous, zat seperti jeli di tengah mata. Operasi tersebut dapat menghilangkan darah atau cairan, jaringan parut, dan sebagian gel vitreous sehingga sinar cahaya dapat terfokus dengan baik pada retina."]
+                recommendation = {"message": message, "general_recommendation": general_recommendation}
+          
             data = {"prediction": prediction, "label": label_name, "kumilcintabh": recommendation}
             return jsonify(data)
         except Exception as e:

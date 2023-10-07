@@ -5,3 +5,7 @@ README.md
 *.pyd
 __pycache__
 .pytest_cache
+test
+.gcloudignore
+.gitignore
+.idea

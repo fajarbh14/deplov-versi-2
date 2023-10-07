@@ -1,3 +1,4 @@
+from flask import Flask, request, jsonify
 import tensorflow as tf
 from tensorflow import keras
 import numpy as np
@@ -6,7 +7,8 @@ import os
 from PIL import Image, ImageOps
 import cv2
 
-from flask import Flask, request, jsonify
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
 
 model = keras.models.load_model('best_model.h5')
 
@@ -42,7 +44,7 @@ def predict(x):
 app = Flask(__name__)
 
 
-@app.route('/cek', methods=['POST'])
+@app.route('/', methods=['POST'])
 def index():
     if request.method == "POST":
         file = request.files.get('file')
@@ -70,26 +72,53 @@ def index():
             recommendation = {}
 
             if label_name == 'Tidak ada DR (Tidak ada Retinopati Diabetes)':
-                recommendation = 'Anda tidak memiliki tanda-tanda Retinopati Diabetes. Tetap jaga pola hidup sehat'
-            else:
-                title = "Beberapa cara mengatasi Retinopati Diabetik"
-
-                general_recommendation = [
-                    "Meskipun retinopati diabetik dapat menyebabkan kehilangan penglihatan yang tidak dapat diperbaiki, pengelolaan kadar gula darah yang berhasil dapat membantu mencegah hilangnya penglihatan. Ini termasuk menjaga pola makan, meningkatkan aktivitas fisik, dan minum obat diabetes sesuai petunjuk.",
-                    "Perawatan lain bergantung pada stadium atau luasnya penyakit. Jika diketahui sejak dini – sebelum kerusakan pada retina terjadi – pengelolaan gula darah mungkin merupakan satu-satunya pengobatan yang diperlukan.",
-                    "Perawatan lain bergantung pada stadium atau luasnya penyakit. Jika diketahui sejak dini – sebelum kerusakan pada retina terjadi – pengelolaan gula darah mungkin merupakan satu-satunya pengobatan yang diperlukan."
-                ]
-
-                specific_recomendation = [
-                    "1. Eye Injections: Suntikan steroid pada mata untuk menghentikan peradangan dan mencegah pembentukan pembuluh darah baru. Suntikan anti-VEGF juga mungkin disarankan, yang dapat mengurangi pembengkakan di makula dan meningkatkan penglihatan.",
-                    "2. Operasi Leser: Operasi laser yang disebut fotokoagulasi mengurangi pembengkakan di retina dan menghilangkan pembuluh darah abnormal.",
-                    "3. Vitrektomi: Jika Anda menderita retinopati diabetik stadium lanjut, Anda mungkin memerlukan vitrektomi. Operasi mata ini mengatasi masalah pada retina dan vitreous, zat seperti jeli di tengah mata. Operasi tersebut dapat menghilangkan darah atau cairan, jaringan parut, dan sebagian gel vitreous sehingga sinar cahaya dapat terfokus dengan baik pada retina. Ablasi retina dapat dikoreksi pada saat yang bersamaan."
-                ]
-
-                recommendation = {"title": title,
-                                  "general_recommendation": general_recommendation,
-                                  "specific_recomendation": specific_recomendation
-                                  }
+                message = ["Lakukan Kontrol Gula Darah Secara Berkala"]
+                general_recommendation = ["Cara Menurunkan Gula Darah dengan Alam",
+                                          "1 Berolahraga secara teratur.",
+                                          "2 Minum banyak air putih.",
+                                          "3 Konsumsi makanan berserat.",
+                                          "4 Konsumsi makanan kaya protein.",
+                                          "5 Konsumsi makanan kaya kromium"]
+                recommendation = {
+                    "message": message,
+                    "general_recommendation": general_recommendation
+                }
+            elif label_name == 'DR Ringan (Mild)':
+                message = ["Lakukan Kontrol Gula Darah Secara Berkala"]
+                general_recommendation = ["Cara Menurunkan Gula Darah dengan Alam",
+                                          "1 Berolahraga secara teratur.",
+                                          "2 Minum banyak air putih.",
+                                          "3 Konsumsi makanan berserat.",
+                                          "4 Konsumsi makanan kaya protein.",
+                                          "5 Konsumsi makanan kaya kromium"]
+                recommendation = {
+                    "message": message,
+                    "general_recommendation": general_recommendation
+                }
+            elif label_name == 'DR Sedang (Moderate)':
+                message = ["Lakukan konsultasi ke Dokter"]
+                general_recommendation = ["Hal-hal yang mungkin dilakukan setelah melakukan konsultasi bersama Dokter:",
+                                          "1 Injeksi mata: Dokter akan menyuntikan steroid pada mata untuk menghentikan peradangan dan mencegah pembentukan pembuluh darah baru. Suntikan anti-VEGF juga mungkin disarankan, yang dapat mengurangi pembengkakan di makula dan meningkatkan penglihatan.",
+                                          "2 Operasi Leser: Operasi laser yang disebut fotokoagulasi mengurangi pembengkakan di retina dan menghilangkan pembuluh darah abnormal.",
+                                          "3 Vitrektomi: Jika Anda menderita retinopati diabetik stadium lanjut, Anda mungkin memerlukan vitrektomi. Operasi mata ini mengatasi masalah pada retina dan vitreous, zat seperti jeli di tengah mata. Operasi tersebut dapat menghilangkan darah atau cairan, jaringan parut, dan sebagian gel vitreous sehingga sinar cahaya dapat terfokus dengan baik pada retina."]
+                recommendation = {"message": message,
+                                  "general_recommendation": general_recommendation}
+            elif label_name == 'DR Parah (Severe)':
+                message = ["Lakukan konsultasi ke Dokter"]
+                general_recommendation = ["Hal-hal yang mungkin dilakukan setelah melakukan konsultasi bersama Dokter:",
+                                          "1 Injeksi mata: Dokter akan menyuntikan steroid pada mata untuk menghentikan peradangan dan mencegah pembentukan pembuluh darah baru. Suntikan anti-VEGF juga mungkin disarankan, yang dapat mengurangi pembengkakan di makula dan meningkatkan penglihatan.",
+                                          "2 Operasi Leser: Operasi laser yang disebut fotokoagulasi mengurangi pembengkakan di retina dan menghilangkan pembuluh darah abnormal.",
+                                          "3 Vitrektomi: Jika Anda menderita retinopati diabetik stadium lanjut, Anda mungkin memerlukan vitrektomi. Operasi mata ini mengatasi masalah pada retina dan vitreous, zat seperti jeli di tengah mata. Operasi tersebut dapat menghilangkan darah atau cairan, jaringan parut, dan sebagian gel vitreous sehingga sinar cahaya dapat terfokus dengan baik pada retina."]
+                recommendation = {"message": message,
+                                  "general_recommendation": general_recommendation}
+            elif label_name == 'DR Proliferatif (Proliferative)':
+                message = ["Lakukan konsultasi ke Dokter"]
+                general_recommendation = ["Hal-hal yang mungkin dilakukan setelah melakukan konsultasi bersama Dokter:",
+                                          "1 Injeksi mata: Dokter akan menyuntikan steroid pada mata untuk menghentikan peradangan dan mencegah pembentukan pembuluh darah baru. Suntikan anti-VEGF juga mungkin disarankan, yang dapat mengurangi pembengkakan di makula dan meningkatkan penglihatan.",
+                                          "2 Operasi Leser: Operasi laser yang disebut fotokoagulasi mengurangi pembengkakan di retina dan menghilangkan pembuluh darah abnormal.",
+                                          "3 Vitrektomi: Jika Anda menderita retinopati diabetik stadium lanjut, Anda mungkin memerlukan vitrektomi. Operasi mata ini mengatasi masalah pada retina dan vitreous, zat seperti jeli di tengah mata. Operasi tersebut dapat menghilangkan darah atau cairan, jaringan parut, dan sebagian gel vitreous sehingga sinar cahaya dapat terfokus dengan baik pada retina."]
+                recommendation = {"message": message,
+                                  "general_recommendation": general_recommendation}
 
             data = {"prediction": prediction, "label": label_name,
                     "kumilcintabh": recommendation}
